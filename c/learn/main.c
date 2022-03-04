@@ -1,7 +1,7 @@
 #include <stdio.h>
+#define ASD "SDF"
 
 int main()
 {
-	print("Hello, World!")
+	printf("Fuck,"ASD" World!");
 }
-
