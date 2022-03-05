@@ -3,9 +3,9 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -O3 -std=c99 -pedantic
 
-all: prime rpn pi
+all: prime rpn testing testing-tester
 
-test: testing
+test: testing prime rpn
 	./testing all
 
 # `factor` clone
@@ -20,11 +20,14 @@ rpn: rpn.c
 testing: testing.c
 	${CC} ${CFLAGS} -o testing testing.c
 
+testing-tester: testing-tester.c
+	${CC} ${CFLAGS} -o testing-tester testing-tester.c
+
 # 50th on the pro/g/ramming challenges
 pi: pi.c
 	${CC} ${CFLAGS} -o pi pi.c
 
 clean:
-	rm -f prime testing rpn pi
+	rm -f prime testing rpn pi testing-tester
 
 .PHONY: all clean test
