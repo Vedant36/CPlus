@@ -1,15 +1,17 @@
 # C
 CC ?= gcc
-ERROR ?= -Wall -Wextra -Werror -pedantic
-STD ?= c99
-CFLAGS ?= -O3
+ERROR ?= -Wall -Wextra -Werror -pedantic -ggdb
+STD ?= -std=c99
+LDFLAGS ?= -lm
+CFLAGS ?= -O3 ${STD}
+FILES = classes classes-typedef generators type-agnostic-function simple-fork-pipe-dup garbage-collector
 
 # main file, just for testing new concepts
 main: main.c
-	${CC} ${CFLAGS} ${ERROR} -std=${STD} -o main main.c
+	${CC} ${CFLAGS} ${LDFLAGS} ${ERROR} -o main main.c
 
 bad:
-	${CC} ${CFLAGS} -std=${STD} -o main main.c
+	${CC} ${CFLAGS} ${LDFLAGS} -o main main.c
 
 run:
 	./main
@@ -19,9 +21,9 @@ type-agnostic-function: type-agnostic-function.c
 	${CC} ${CFLAGS} -std=c11 -o type-agnostic-function type-agnostic-function.c
 
 clean:
-	rm -f main classes classes-typedef generators type-agnostic-function
+	rm -f main ${FILES}
 
 # working examples
-all: classes classes-typedef generators type-agnostic-function
+all: ${FILES}
 
 .PHONY: all bad run clean

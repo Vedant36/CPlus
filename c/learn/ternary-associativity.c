@@ -1,3 +1,6 @@
+// C and most languages have the right to left associativity for ternary
+// expressions, mostly because it is what one would expect when writing one
+// This example shows how the ternary would be rewritten with if-else
 // `cond1 ? 1 : cond2 ? 2 : cond3 ? 3 : 4`
 // will be evaluated to:
 

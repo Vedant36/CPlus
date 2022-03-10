@@ -1,4 +1,7 @@
-// the -Wsequence-point error
+// The -Wsequence-point error
+// It is a compiler error that disallows using the same variable twice in a
+// single expression, one of which is an increment/decrement
+
 a = a++;
 // is equivalent to
 a++;
