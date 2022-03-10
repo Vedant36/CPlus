@@ -1,0 +1,1 @@
+(\xyz.x z (y z)) (\x.x) (\x.x) ((\xyz.x z (y z)) (\x.x) (\x.x))
