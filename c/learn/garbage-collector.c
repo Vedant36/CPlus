@@ -37,7 +37,7 @@ gc_allocate (enum gc_type type, union gc_val obj)
 // no deallocator as we can just manually deallocate resources ourselves
 
 void
-gc_cleanup ()
+gc_cleanup (void)
 {
 	for (size_t i = 0; i < gc_size; i++) {
 		// No need to worry if the file is closed or the memory is
@@ -60,15 +60,15 @@ gc_cleanup ()
 int
 main (int argc, char **argv)
 {
+	/* the cleanup funciton can be registered to run when the program
+	 * exits from anywhere
+	 */
+	atexit(gc_cleanup);
 	union gc_val impfile = { .fd = fopen("main.c", "r") };
 	gc_allocate(C_FCLOSE, impfile);
 	union gc_val bankdetails = { .string = malloc(64 * sizeof(char)) };
 	strcpy(bankdetails.string, "i hav lots of cash money. source: trust me\n");
 	gc_allocate(C_FREE, bankdetails);
-	// Imagine you need to exit because of some error before returning to
-	// the end of the function where you would normally do cleanup
-	// This cleanup will work even when called from other scopes/functions
-	gc_cleanup();
 
 	return 0;
 }
