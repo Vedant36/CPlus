@@ -1,0 +1,6 @@
+*
+!Makefile
+!*.c
+!*.h
+!iris.csv
+!.gitignore
