@@ -18,14 +18,17 @@ int main(int argc, char **argv)
 		usage(argv[0]);
 		return 1;
 	}
+
 	size_t s_in = atoi(argv[2]), s_out = atoi(argv[3]);
 	int line_offset = argc >= 5 ? atoi(argv[4]) : 0;
-	char *buf = NULL;
+	/* struct layer input = {0}, output = {0}; */
+	/* input.size = atoi(argv[2]); */
+	/* output.size = atoi(argv[3]); */
 	float *in = NULL;
 	float *out = NULL;
-	size_t num_lines = util_setup(argv[1], &buf, line_offset, &in, &out, s_in, s_out);
+	size_t num_lines = util_setup(argv[1], line_offset, &in, &out, s_in, s_out);
 
-	util_show(&in, &out, num_lines);
+	util_show(&in, &out, s_in, s_out, num_lines);
 
 	util_free(&in, &out);
 	return 0;

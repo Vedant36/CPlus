@@ -1,18 +1,20 @@
 /* Unix `factor` clone (but much slower of course) */
-/* Original factor code: https://github.com/coreutils/coreutils/blob/master/src/factor.c */
-/* My implementatoin can only handle numbers upto 18446744073709551615 (ULLONG_MAX) */
-#include <stdio.h>	// printf
-#include <stdlib.h>	// strtoll
-#include <math.h>	// sqrt
+/* Original factor code:
+ * https://github.com/coreutils/coreutils/blob/master/src/factor.c */
+/* My implementatoin handles numbers upto 18446744073709551615 (ULLONG_MAX) */
+#include <stdio.h>	/* printf */
+#include <stdlib.h>	/* strtoll */
+#include <math.h>	/* sqrt */
 
-typedef unsigned long long int big;
+typedef unsigned long int big;
 int factors(big num);
 void output(char *input, char *progname);
 
 int main(int argc, char **argv)
 {
 	if (argc > 1) {
-		for (int i = 1; i < argc; i++)
+		int i = 1;
+		for (i = 1; i < argc; i++)
 			output(argv[i], argv[0]);
 	} else {
 		char input[32];
@@ -24,36 +26,38 @@ int main(int argc, char **argv)
 
 void output(char *input, char *progname)
 {
-	big num = strtoull(input, NULL, 0);
+	big num = strtoul(input, NULL, 0);
 	if (num == 0) {
-		fprintf(stderr, "%s: '%llu' is not a valid positive integer\n", progname, num);
+		fprintf(stderr, "%s: '%lu' is not a valid positive integer\n",
+				progname, num);
 		return;
 	}
-	printf("%llu:", num);
+	printf("%lu:", num);
 	factors(num);
 	printf("\n");
 }
 
 int factors(big num)
 {
+	big i = 3, limit = (big) sqrt(num) + 1;
+
 	while (num % 2 == 0) {
 		num /= 2;
 		printf(" %d", 2);
 	}
 
-	big i = 3, limit = sqrt(num) + 1;
 	while (i < limit && num != 1) {
 		if (num % i == 0) {
 			num /= i;
 			limit = sqrt(num) + 1;
-			printf(" %llu", i);
+			printf(" %lu", i);
 		} else {
 			i += 2;
 		}
 	}
 
 	if (num != 1)
-		printf(" %llu", num);
+		printf(" %lu", num);
 
 	return 0;
 }

@@ -21,19 +21,23 @@ int main()
 	}
 
 	if (p == 0) {
-		printf("[Debug] Child  with forkid: %d; pid: %d\n", p, getpid());
+		printf("[Debug] Child  with forkid: %d; pid: %d\n",
+				p, getpid());
 		close(fd[0]);
 		dup2(fd[1], 1);
-		execlp("echo", "echo", "-n", "'Do' or 'do not', there is no 'try'", NULL);
+		execlp("echo", "echo", "-n",
+				"'Do' or 'do not', there is no 'try'", NULL);
 	} else {
-		printf("[Debug] Parent with forkid: %d; pid: %d\n", p, getpid());
+		printf("[Debug] Parent with forkid: %d; pid: %d\n",
+				p, getpid());
 		close(fd[1]);
 		char buf[64];
 		if (read(fd[0], buf, 64) == -1) {
 			perror("read");
 			exit(errno);
 		}
-		printf("Read %zu bytes `%s` from filedescriptor:%d\n", strlen(buf), buf, fd[1]);
+		printf("Read %zu bytes `%s` from filedescriptor:%d\n",
+				strlen(buf), buf, fd[1]);
 		close(fd[0]);
 	}
 

@@ -1,8 +1,8 @@
 
-/* node is malloced to */
 struct layer {
 	size_t size;
-	float *node;
+	float *weights;
+	struct layer *next;
 };
 
 void usage(char *progname);

@@ -10,7 +10,6 @@ int stack[STACK_SIZE] = {0};
 unsigned char rsp = 0;
 void handle_ops(char op);
 
-
 int main() // {{{1
 {
 	char buf[16];
@@ -30,8 +29,6 @@ int main() // {{{1
 	}
 	return 0;
 }
-
-
 
 void handle_ops(char op) // {{{1
 {
@@ -64,6 +61,7 @@ void handle_ops(char op) // {{{1
 		break;
 	case 'n':
 		printf("%d", a);
+		rsp--;
 		break;
 	case 'd':
 		stack[rsp] = a;

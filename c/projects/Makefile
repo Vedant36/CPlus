@@ -1,9 +1,10 @@
 # personal projects for practice
 # sorted in the order of developement
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -O3 -std=c99 -pedantic
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -ggdb
+FILES = prime rpn testing testing-tester shell brainfuck
 
-all: prime rpn testing testing-tester
+all: ${FILES}
 
 test: testing prime rpn
 	./testing all
@@ -23,11 +24,17 @@ testing: testing.c
 testing-tester: testing-tester.c
 	${CC} ${CFLAGS} -o testing-tester testing-tester.c
 
+shell: shell.c
+	${CC} ${CFLAGS} -o $@ $^
+
+brainfuck: brainfuck.c
+	${CC} ${CFLAGS} -o $@ $^
+
 # 50th on the pro/g/ramming challenges
 pi: pi.c
 	${CC} ${CFLAGS} -o pi pi.c
 
 clean:
-	rm -f prime testing rpn pi testing-tester
+	rm -f ${FILES}
 
 .PHONY: all clean test

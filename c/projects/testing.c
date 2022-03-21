@@ -1,8 +1,10 @@
+#define _POSIX_C_SOURCE 2
 #include <stdio.h>
 #include <string.h>	// strcmp
-#include <stdlib.h>	// exit(1)
-#include <unistd.h>	// execvp
+#include <stdlib.h>	// exit(1);
 #include <errno.h>
+#include <assert.h>	// void assert(scalar expression);
+#include <stdbool.h>
 #define NUM_TARGETS 2
 
 struct target {
@@ -43,7 +45,7 @@ void test (const char *target)
 		if (!target || strcmp(target, targetlist[i].name) == 0) {
 			printf("[Info] Testing `%s`...\n", targetlist[i].name);
 			int successful = targetlist[i].test();
-			if (successful == 0) {
+			if (!successful) {
 				printf("[Error] Test Failed!\n");
 				fail_count += 1;
 			}
@@ -57,10 +59,22 @@ void test (const char *target)
 
 int tmp()
 {
+	FILE *f = popen("./testing-tester", "r");
+	if (f == NULL) {
+		perror("popen");
+		return 0;
+	}
+	char buf[64];
+	fgets(buf, 64, f);
+	assert(strcmp(buf, "Hello, world!\n") == 0);
+	/* fgets(buf, 64, f); */
+	/* assert(strcmp(buf, "test error\n") == 0); */
+	unsigned int returned = pclose(f);
+	printf("%u", returned);
 	return 1;
 }
 
 int rpn()
 {
-	return 0;
+	return 1;
 }

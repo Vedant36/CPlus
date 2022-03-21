@@ -3,20 +3,22 @@
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
+#include "neural.h"
 #include "util.h"
 #define NDEBUG
 
 /* Throwing everything here so that I can focus on the neural net algorithm
  */
-size_t util_setup(char *progname, char **buf, int line_offset,
+size_t util_setup(char *progname, int line_offset,
 		float **in, float **out, size_t s_in, size_t s_out)
 {
 	// combine the below two lines
-	size_t filesize = slurp_file(progname, buf, line_offset);
-	size_t num_lines = get_num_lines(buf, filesize);
+	char *buf = NULL;
+	size_t filesize = slurp_file(progname, &buf, line_offset);
+	size_t num_lines = get_num_lines(&buf, filesize);
 	printf("Filesize     : %zu\n", filesize);
 	printf("No. of lines : %zu\n", num_lines);
-	allocate_arrays(buf, num_lines, filesize, in, out, s_in, s_out);
+	allocate_arrays(&buf, num_lines, filesize, in, out, s_in, s_out);
 	return num_lines;
 }
 

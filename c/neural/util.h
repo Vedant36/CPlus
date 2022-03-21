@@ -1,5 +1,5 @@
 
-size_t util_setup(char *progname, char **buf, int line_offset,
+size_t util_setup(char *progname, int line_offset,
 		float **in, float **out, size_t s_in, size_t s_out);
 void util_show(float **in, float **out, size_t s_in, size_t s_out,
 		size_t num_lines);

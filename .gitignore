@@ -1,6 +1,7 @@
 *
-!*.*
-a.out
 !*/
+!*.*
+*.o
+a.out
 !Makefile
 !.gitignore
