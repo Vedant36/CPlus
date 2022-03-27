@@ -1,9 +1,8 @@
 # Neural network to train on the neural dataset
-CC ?= gcc
-ERROR ?= -Wall -Wextra -Werror -pedantic
-STD ?= -std=c99
-CFLAGS ?= -O3 ${STD} -ggdb
-# LDFLAGS ?= -lm
+CC = gcc
+ERROR = -Wall -Wextra -Werror -pedantic
+CFLAGS = -Og -ggdb -std=c99
+LDFLAGS = -lm
 SRC = neural.c util.c
 
 neural: ${SRC}
