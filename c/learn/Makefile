@@ -1,11 +1,11 @@
 # Files from me learning C
-CC ?= gcc
-ERROR ?= -Wall -Wextra -Werror -pedantic -ggdb -fsanitize=address
-STD ?= -std=c99
-LDFLAGS ?=
-CFLAGS ?= -O3 ${STD}
-FILES = classes classes-typedef generators type-agnostic-function \
-		simple-fork-pipe-dup garbage-collector code-profiling
+CC = gcc
+ERROR = -Wall -Wextra -Werror -pedantic -Wno-unused-parameter
+LDFLAGS =
+# -fsanitize=address prevents valgrind from working
+CFLAGS = -Og -std=c99 -ggdb -fsanitize=address -fsanitize=undefined -fanalyzer
+IGNORE = sequence-point
+FILES = classes classes-typedef code-profiling garbage-collector generators recursive-function-main simple-fork-pipe-dup ternary-associativity type-agnostic-function understanding-contiguous-structs vsort
 
 # main file, just for testing new concepts
 main: main.c
@@ -20,6 +20,9 @@ run: main
 # this code needs anonymous unions, which are only available in >=c11
 type-agnostic-function: type-agnostic-function.c
 	${CC} ${CFLAGS} -std=c11 -o type-agnostic-function type-agnostic-function.c
+
+vsort: vsort.c code-profiling.c
+	${CC} ${CFLAGS} -DPROFILE_IMPLEMENTATION -o vsort vsort.c code-profiling.c
 
 clean:
 	rm -f main ${FILES}

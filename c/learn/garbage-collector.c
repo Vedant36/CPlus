@@ -1,74 +1,102 @@
+/*
+ * Demo of a possible form of garbage collector in C.
+ * Note that we need to also pass the information about how to deallocate the
+ * pointer. Here that is done by creating the `gc_type` enumeration.
+ */
 #include <stdio.h>
-#include <stdlib.h>	// for malloc
-#include <string.h>	// strcpy
-#include <errno.h>	// error reporting
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <assert.h>
 
-// in this demo, i haven't typedef them for readability but one can choose to
-// do that as much as they like
-union gc_val {
-	FILE *fd;
-	char *string;
-};
 enum gc_type {
-	C_NULL,
-	C_FCLOSE,
-	C_FREE,
-};
-struct gc_obj {
-	enum gc_type type;
-	union gc_val obj;
+	GC_NULL,
+	GC_FCLOSE,
+	GC_FREE,
 };
 
+typedef struct {
+	enum gc_type type;
+	void *ptr;
+} gc_obj;
 
 #define GC_SIZE 64
-struct gc_obj gc_list[GC_SIZE];
-size_t gc_size = 0;
+static gc_obj gc_list[GC_SIZE];
+static size_t gc_size = 0;
 
-void
-gc_allocate (enum gc_type type, union gc_val obj)
+FILE *gc_fopen(const char *restrict pathname, const char *restrict mode);
+void *gc_malloc(size_t size);
+/*
+ * the cleanup funciton can be registered to run when the program
+ * exits from anywhere
+ */
+void gc_cleanup(void);
+
+int main(int argc, char **argv)
 {
-	struct gc_obj tmp = {
-		.type = type,
-		.obj = obj
-	};
-	gc_list[gc_size++] = tmp;
-}
+	/* atexit(gc_cleanup); */
+	char *bankdetails = gc_malloc(64 * sizeof(char));
+	FILE *impfile = gc_fopen("main.c", "r");
 
-// no deallocator as we can just manually deallocate resources ourselves
-
-void
-gc_cleanup (void)
-{
-	for (size_t i = 0; i < gc_size; i++) {
-		// No need to worry if the file is closed or the memory is
-		// deallocated, setting the value to NULL handles that
-		// We need to do this because according to the C standard,
-		// refreeing and reclosing files is undefined behaviour
-		switch (gc_list[i].type) {
-		case C_FCLOSE:
-			fclose(gc_list[i].obj.fd);
-			gc_list[i].obj.fd = NULL;
-			break;
-		case C_FREE:
-			free(gc_list[i].obj.string);
-			gc_list[i].obj.string = NULL;
-			break;
-		}
-	}
-}
-
-int
-main (int argc, char **argv)
-{
-	/* the cleanup funciton can be registered to run when the program
-	 * exits from anywhere
-	 */
-	atexit(gc_cleanup);
-	union gc_val impfile = { .fd = fopen("main.c", "r") };
-	gc_allocate(C_FCLOSE, impfile);
-	union gc_val bankdetails = { .string = malloc(64 * sizeof(char)) };
-	strcpy(bankdetails.string, "i hav lots of cash money. source: trust me\n");
-	gc_allocate(C_FREE, bankdetails);
+	strcpy(bankdetails, "i hav lots of money. source: trust me");
+	printf("The allocated string: `%s`\n", bankdetails);
+	char buf[64];
+	size_t size = fread(buf, sizeof(char), 64, impfile);
+	buf[size - 1] = '\0';
+	printf("Printing an important file!\n");
+	printf(buf);
+	printf("\n");
+	gc_cleanup();
 
 	return 0;
 }
+
+void *gc_malloc(size_t size)
+{
+	gc_obj ret = {
+		.type = GC_FREE,
+		.ptr = malloc(size)
+	};
+	if (ret.ptr == NULL || size == 0) {
+		perror("malloc");
+		exit(errno);
+	}
+	assert(gc_size < GC_SIZE);
+	gc_list[gc_size++] = ret;
+	return ret.ptr;
+}
+
+FILE *gc_fopen(const char *restrict pathname, const char *restrict mode)
+{
+	gc_obj ret = {
+		.type = GC_FCLOSE,
+		.ptr = fopen(pathname, mode)
+	};
+	if (ret.ptr == NULL) {
+		perror("fopen");
+		exit(errno);
+	}
+	assert(gc_size < GC_SIZE);
+	gc_list[gc_size++] = ret;
+	return ret.ptr;
+}
+
+void gc_cleanup(void)
+{
+	for (size_t i = 0; i < gc_size; i++) {
+		switch (gc_list[i].type) {
+		case GC_FCLOSE:
+			printf("Closing file\n");
+			fclose(gc_list[i].ptr);
+			break;
+		case GC_FREE:
+			printf("Freeing memory\n");
+			free(gc_list[i].ptr);
+			break;
+		default:
+			continue;
+		}
+		gc_list[i].type = GC_NULL;
+	}
+}
+

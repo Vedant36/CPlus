@@ -1,43 +1,36 @@
+#define _POSIX_C_SOURCE 199309L /* for clock_gettime */
 #define _XOPEN_SOURCE 500   /* for usleep */
 #include <stdio.h>
-#include <unistd.h>         /* all system calls */
-#include <time.h>	/* to profile code with nanosecond accuracy */
+#include <unistd.h>
+#include <time.h>
+#include "code-profiling.h"
 
-void profile(int init);
-
+#ifndef PROFILE_IMPLEMENTATION
 int main()
 {
 	printf("Program start!\n");
-	profile(1);
+	profile();
 	/* imagine these to be some code */
-	usleep(613);
-	profile(0);
-	usleep(719);
-	profile(0);
+	usleep(3613);
+	printf("Time from last call: %f\n", profile());
+	usleep(4719);
+	printf("Time from last call: %f\n", profile());
 }
+#endif
 
 /*
- * Put the `profile(1);` to initialize the profiling
- * After that every `profile(0);` in the function will print the time since the
- * last call.
+ * returns time difference in double between the last call. Returns the time since
+ * epoch for the first call
  */
-void profile(int init)
+double profile()
 {
 	static struct timespec profile_start = {0};
-	if (init) {
-		clock_gettime(CLOCK_REALTIME, &profile_start);
-		return;
-	}
 	struct timespec now;
 	clock_gettime(CLOCK_REALTIME, &now);
-	if (now.tv_nsec > profile_start.tv_nsec)
-		printf("Time from last call: %ld.%09ld\n",
-				now.tv_sec - profile_start.tv_sec,
-				now.tv_nsec - profile_start.tv_nsec);
-	else
-		printf("Time from last call: %ld.%09ld\n",
-				now.tv_sec - profile_start.tv_sec,
-				1000000000 + now.tv_nsec - profile_start.tv_nsec);
+	double ret = now.tv_sec - profile_start.tv_sec
+		 + (now.tv_nsec <= profile_start.tv_nsec)
+		 + (now.tv_nsec - profile_start.tv_nsec) / 1000000000.00;
 	clock_gettime(CLOCK_REALTIME, &profile_start);
+	return ret;
 }
 
