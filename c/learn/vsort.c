@@ -5,7 +5,8 @@
 #include <stdlib.h>         /* standard library definitions */
 #include <unistd.h>
 #include <time.h>           /* to profile code with nanosecond accuracy */
-#include "code-profiling.h"
+#define PROFILE_IMPLEMENTATION
+#include "profile.h"
 
 void array_show(int *array, size_t size);
 int* vsort(const int *array, size_t size);

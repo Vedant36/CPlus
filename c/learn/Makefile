@@ -22,7 +22,7 @@ type-agnostic-function: type-agnostic-function.c
 	${CC} ${CFLAGS} -std=c11 -o type-agnostic-function type-agnostic-function.c
 
 vsort: vsort.c code-profiling.c
-	${CC} ${CFLAGS} -DPROFILE_IMPLEMENTATION -o vsort vsort.c code-profiling.c
+	${CC} ${CFLAGS} -o vsort vsort.c
 
 clean:
 	rm -f main ${FILES}
