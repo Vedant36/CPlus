@@ -8,40 +8,47 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <unistd.h>
+#include "brainfuck.h"
 /*
  * TODO: use sth like jump tables for `[]` instead of looping to the locations
  */
 
 int main(int argc, char **argv)
 {
+	int ret = 0;
 	if (argc < 2) {
 		logger("Give file pls\n");
 		return 1;
 	} else {
 		/* interpret(argv[1], strlen(argv[1])); */
 		FILE *fd = fopen(argv[1], "r");
+		char *buf = NULL;
 		if (fd == NULL) {
 			perror("fopen");
-			exit(errno);
+			return errno;
 		}
 		if (fseek(fd, 0, SEEK_END) == -1) {
 			perror("fseek");
-			exit(errno);
+			ret = errno;
+			fclose(fd);
+			goto error;
 		}
 		size_t size = ftell(fd);
 		rewind(fd);
 		logger("Filesize: %zu\n", size);
-		char *buf = malloc(size);
+		buf = malloc(size);
 
 		if (fread(buf, 1, size, fd) == 0) {
 			logger("Nothing read!\n");
-		} else {
-			interpret(buf, size);
+			ret = 1;
+			goto error;
 		}
-		fclose(fd);
+		interpret(buf, size);
+error:
 		free(buf);
+		fclose(fd);
 	}
-	return 0;
+	return ret;
 }
 
 /*

@@ -1,6 +1,6 @@
 
 #define BF_CELL_COUNT 65536
-#define CELL_TYPE unsigned int
+#define CELL_TYPE unsigned short
 #define _debug(...)				\
 	do {					\
 		fprintf(stderr, __VA_ARGS__);	\
