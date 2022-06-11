@@ -15,6 +15,8 @@ projects/shell.c
 projects/testing.c
 
 # more C project ideas
+matrix scrolling screen(bonus: kana and kanji support)
+chess engine - https://www.chessprogramming.org
 database management system
 ncurses based high-level brainfuck IDE
 [FALSE - Esolang](https://esolangs.org/wiki/FALSE)

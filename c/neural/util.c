@@ -84,6 +84,7 @@ static size_t get_num_lines(char **buf, size_t filesize)
 static void allocate_arrays(char **buf, size_t num_lines,
 		float **in, float **out, size_t s_in, size_t s_out)
 {
+	// TODO: allocate in as contiguous 2-d array
 	*in  = malloc(num_lines * s_in * sizeof(*in));
 	*out = calloc(num_lines * s_out, sizeof(*out));
 	size_t i, j;
@@ -106,6 +107,7 @@ static void allocate_arrays(char **buf, size_t num_lines,
 		(*out)[i * s_out + s_odict - 1] = 1;
 		tok = strtok(NULL, ",");
 	}
+	assert(strtok(NULL, ",\n") == NULL);
 
 	for (i = 0; i < s_out; i++) {
 		free(odict[i]);

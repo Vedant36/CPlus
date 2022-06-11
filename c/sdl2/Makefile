@@ -3,7 +3,7 @@ CC ?= gcc
 ERROR ?= -Wall -Wextra -Werror -pedantic -ggdb
 STD ?= -std=c99
 CFLAGS ?= -O3 ${STD}
-LDFLAGS ?= -lSDL2 -lSDL2main -lSDL2_image
+LDFLAGS ?= -lSDL2 -lSDL2_image
 SRC = main.c
 HEADERS = main.h util.h
 

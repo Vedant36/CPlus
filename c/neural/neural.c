@@ -11,6 +11,7 @@
  * initializing weights and biases with random numbers
  * shuffling the input array and splitting it into train and test
  * output a file containing the trained data that can be used to test cases
+ * automatically detect the number of fields using the first column
  */
 
 /* Neural structure:

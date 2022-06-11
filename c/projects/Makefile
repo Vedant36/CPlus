@@ -1,8 +1,9 @@
 # personal projects for practice
 # sorted in the order of developement
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -ggdb
-FILES = prime rpn testing testing-tester shell brainfuck
+DEBUG = -ggdb -Og -fsanitize=address -fsanitize=undefined -fanalyzer
+CFLAGS = ${DEBUG} -Wall -Wextra -Werror -std=c99 -pedantic
+FILES = prime rpn testing testing-tester shell pascaltriangle
 
 all: ${FILES}
 
@@ -27,7 +28,7 @@ testing-tester: testing-tester.c
 shell: shell.c
 	${CC} ${CFLAGS} -o $@ $^
 
-brainfuck: brainfuck.c
+pascaltriangle: pascaltriangle.c
 	${CC} ${CFLAGS} -o $@ $^
 
 # 50th on the pro/g/ramming challenges

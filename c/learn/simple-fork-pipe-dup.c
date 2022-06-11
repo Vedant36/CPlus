@@ -32,12 +32,14 @@ int main()
 				p, getpid());
 		close(fd[1]);
 		char buf[64];
-		if (read(fd[0], buf, 64) == -1) {
+		int count = read(fd[0], buf, 64);
+		if (count <= 0) {
 			perror("read");
 			exit(errno);
 		}
-		printf("Read %zu bytes `%s` from filedescriptor:%d\n",
-				strlen(buf), buf, fd[1]);
+		buf[count] = '\0';
+		printf("Read %d bytes `%s` from file descriptor:%d\n",
+				count, buf, fd[1]);
 		close(fd[0]);
 	}
 

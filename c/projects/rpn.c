@@ -1,5 +1,4 @@
 /* gnu `dc` clone */
-// Includes and globals {{{1
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -7,10 +6,10 @@
 #define STACK_SIZE 32
 
 int stack[STACK_SIZE] = {0};
-unsigned char rsp = 0;
+int rsp = 0;
 void handle_ops(char op);
 
-int main() // {{{1
+int main()
 {
 	char buf[16];
 	int val;
@@ -23,23 +22,24 @@ int main() // {{{1
 				rsp++;
 			}
 		} else {
-			for (unsigned int i = 0; i < strlen(buf); i++)
+			size_t i;
+			for (i = 0; i < strlen(buf); i++)
 				handle_ops(buf[i]);
 		}
 	}
 	return 0;
 }
 
-void handle_ops(char op) // {{{1
+void handle_ops(char op)
 {
-	// >0 elements needed {{{2
+	int a, b, c, tmp, i;
 	int consumed = 1;
 	switch (op) {
-	case 'c': // clear stack
+	case 'c':
 		rsp = 0;
 		break;
-	case 'f': // dump stack
-		for (int i = 0; i < rsp; i++)
+	case 'f':
+		for (i = 0; i < rsp; i++)
 			printf("%d\n", stack[i]);
 		break;
 	default:
@@ -48,13 +48,13 @@ void handle_ops(char op) // {{{1
 	if (consumed)
 		return;
 
-	// >1 elements needed {{{2
+	/* >=1 elements needed */
 	if (rsp == 0) {
 		fprintf(stderr, "stack empty\n");
 		return;
 	}
 	consumed = 1;
-	int a = stack[rsp - 1];
+	a = stack[rsp - 1];
 	switch (op) {
 	case 'p':
 		printf("%d\n", a);
@@ -76,16 +76,15 @@ void handle_ops(char op) // {{{1
 	if (consumed)
 		return;
 
-	// >2 elements needed {{{2
+	/* >=2 elements needed */
 	if (rsp == 1) {
 		fprintf(stderr, "insufficient elements on the stack\n");
 		return;
 	}
 	consumed = 1;
-	int tmp;
-	int b = stack[rsp - 2];
+	b = stack[rsp - 2];
 	switch (op) {
-	case 'r': // swap
+	case 'r':
 		stack[rsp - 2] = a;
 		stack[rsp - 1] = b;
 		return;
@@ -108,12 +107,12 @@ void handle_ops(char op) // {{{1
 		return;
 	}
 
-	// >3 elements needed {{{2
+	/* >=3 elements needed */
 	if (rsp == 2) {
 		fprintf(stderr, "insufficient elements on the stack\n");
 		return;
 	}
-	int c = stack[rsp - 3];
+	c = stack[rsp - 3];
 	consumed = 1;
 	switch (op) {
 	case 'R':
@@ -123,7 +122,7 @@ void handle_ops(char op) // {{{1
 		break;
 	case '|':
 		stack[rsp - 3] = 1;
-		for(int i = 0; i < b; i++)
+		for(i = 0; i < b; i++)
 			stack[rsp - 3] = (stack[rsp - 3] * c) % a;
 		rsp -= 2;
 		break;
@@ -133,5 +132,4 @@ void handle_ops(char op) // {{{1
 	if (consumed)
 		return;
 	fprintf(stderr, "No such operation/Operation unimplemented\n");
-	// }}}2
 }

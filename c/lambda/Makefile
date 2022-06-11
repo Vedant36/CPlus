@@ -12,7 +12,7 @@ noerr:
 	${CC} ${CFLAGS} ${LDFLAGS} -std=${STD} -o lambda lambda.c
 
 run: lambda
-	./lambda
+	./lambda test.lb
 
 clean:
 	rm -f lambda

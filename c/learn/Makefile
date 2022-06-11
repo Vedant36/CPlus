@@ -4,8 +4,10 @@ ERROR = -Wall -Wextra -Werror -pedantic -Wno-unused-parameter
 LDFLAGS =
 # -fsanitize=address prevents valgrind from working
 CFLAGS = -Og -std=c99 -ggdb -fsanitize=address -fsanitize=undefined -fanalyzer
-IGNORE = sequence-point
-FILES = classes classes-typedef code-profiling garbage-collector generators recursive-function-main simple-fork-pipe-dup ternary-associativity type-agnostic-function understanding-contiguous-structs vsort
+IGNORE = sequence-point ternary-associativity
+FILES = classes classes-typedef code-profiling errorhandling garbage-collector \
+		generators recursive-function-main simple-fork-pipe-dup \
+		type-agnostic-function understanding-contiguous-structs vsort
 
 # main file, just for testing new concepts
 main: main.c
@@ -23,6 +25,9 @@ type-agnostic-function: type-agnostic-function.c
 
 vsort: vsort.c code-profiling.c
 	${CC} ${CFLAGS} -o vsort vsort.c
+
+errorhandling: errorhandling.c
+	${CC} -o errorhandling errorhandling.c
 
 clean:
 	rm -f main ${FILES}

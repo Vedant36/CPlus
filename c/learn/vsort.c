@@ -1,5 +1,6 @@
 // just a sorting method I discovered and implemented. its faster than the
-// builtin inplace quicksort for arrays with less than 100 elements
+// builtin inplace quicksort for arrays with less than 15 elements so
+// practically useless but I INVENTED A SORTING ALGORITHM
 #define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>         /* standard library definitions */
@@ -11,9 +12,7 @@
 void array_show(int *array, size_t size);
 int* vsort(const int *array, size_t size);
 int compar(const void *a, const void *b) {
-	int *_a = (int *) a;
-	int *_b = (int *) b;
-	return (*_a > *_b) - (*_a < *_b);
+	return (int *) a - (int *) b;
 }
 
 int main()
@@ -24,11 +23,7 @@ int main()
 	// prints the time it takes to sort for both algorithms which can be
 	// redirected to a file that can be plotted using gnuplot with
 	//     > plot 'filename' using 1:2, 'filename' using 1:3
-	printf("%f\n", profile());
-	sleep(3);
-	printf("%f\n", profile());
-	return 0;
-	for (size_t i = 1; i < 200; i++) {
+	for (size_t i = 2; i < 30; i++) {
 		int *array = malloc(i * sizeof(int));
 		for (size_t j = 0; j < i; j++)
 			array[j] = rand() % 100;
