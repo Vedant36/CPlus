@@ -5,7 +5,7 @@ STD ?= -std=c99
 CFLAGS ?= -O3 ${STD}
 LDFLAGS ?= -lSDL2 -lSDL2_image
 SRC = main.c
-HEADERS = main.h util.h
+HEADERS = util.h
 
 run: sdl2
 	./sdl2

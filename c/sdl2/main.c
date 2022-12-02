@@ -3,11 +3,15 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "main.h"
 #include "util.h"
+
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 640
+#define FPS 60
 
 int main(int argc, char **argv)
 {
+	/* initialization */
 	(void) argc;
 	(void) argv;
 	scc(SDL_Init(SDL_INIT_VIDEO));
@@ -17,12 +21,14 @@ int main(int argc, char **argv)
 			SCREEN_WIDTH, SCREEN_HEIGHT,
 			0);
 	SDL_Surface *surface = scp(SDL_GetWindowSurface(window));
+
+	/* loading image */
 	SDL_Surface *image = scp(IMG_Load("painting.bmp"));
 	SDL_ConvertSurface(image, surface->format, 0);
 	scc((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) - 1);
 	atexit(IMG_Quit);
-
 	SDL_Rect r = image->clip_rect;
+
 	r.x = (surface->w - image->w) / 2;
 	r.y = (surface->h - image->h) / 2;
 	int mousex, mousey;
@@ -32,7 +38,6 @@ int main(int argc, char **argv)
 			 (float) surface->h / image->h);
 	bool running = true;
 	SDL_Event event;
-	/* SDL_EventType last = SDL_FIRSTEVENT; */
 	while (running) {
 		const Uint32 start = SDL_GetTicks();
 		SDL_GetMouseState(&mousex, &mousey);
